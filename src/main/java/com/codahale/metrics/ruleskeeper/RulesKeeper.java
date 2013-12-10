@@ -18,7 +18,7 @@ import com.ning.http.client.AsyncCompletionHandler;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
 
-public class RulesKeeper implements Closeable {
+public final class RulesKeeper implements Closeable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RulesKeeper.class);
 	private static final Pattern WHITESPACE = Pattern.compile("[\\s]+");
@@ -62,16 +62,15 @@ public class RulesKeeper implements Closeable {
 		SUCESSS_STATUS_CODE.add(310);
 	}
 
-	public void sendSingleMetric(String hierarchyKey, String measureName, String value, long timestamp) throws IllegalArgumentException, IOException,
-			InterruptedException, ExecutionException {
+	public void sendSingleMetric(String hierarchyKey, String measureName, String value, long timestamp) throws IOException, InterruptedException,
+			ExecutionException {
 
 		Metric m = Metric.newBuilder().setDataProvider(dataProviderName).setHierarchyKey(hierarchyKey).setTechnicalKey(hierarchyKey).setShortName(measureName)
 				.setEventDate(String.valueOf(timestamp)).setUnit(UnitType.COUNTER).setValue(value).build();
 		sendMetricToServer(m, httpHandler);
 	}
 
-	public void send(String hierarchyKey, String measureName, String value, long timestamp) throws IllegalArgumentException, IOException, InterruptedException,
-			ExecutionException {
+	public void send(String hierarchyKey, String measureName, String value, long timestamp) throws IOException, InterruptedException, ExecutionException {
 
 		Metric m = Metric.newBuilder().setDataProvider(dataProviderName).setHierarchyKey(hierarchyKey)
 				.setTechnicalKey(MetricRegistry.name(hierarchyKey, measureName)).setShortName(measureName).setEventDate(String.valueOf(timestamp))
@@ -79,8 +78,7 @@ public class RulesKeeper implements Closeable {
 		sendMetricToServer(m, httpHandler);
 	}
 
-	public void sendMetricToServer(Metric m, AsyncCompletionHandler<Response> handler) throws IllegalArgumentException, IOException, InterruptedException,
-			ExecutionException {
+	public void sendMetricToServer(Metric m, AsyncCompletionHandler<Response> handler) throws IOException, InterruptedException, ExecutionException {
 		ByteString data = m.toByteString();
 		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
 		String dataAsString = data.toStringUtf8();

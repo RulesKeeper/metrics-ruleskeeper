@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>metrics-ruleskeeper</artifactId>
-  <name>RulesKeeper Integration for Metrics</name>
+  <name>RulesKeeper :: Integration for Metrics</name>
   <packaging>bundle</packaging>
   <description>A Reporter for Metrics which announces measurements to a RulesKeeper Server</description>
 

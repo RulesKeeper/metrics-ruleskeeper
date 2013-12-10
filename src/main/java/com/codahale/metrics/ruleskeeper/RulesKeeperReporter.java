@@ -58,7 +58,7 @@ public class RulesKeeperReporter extends ScheduledReporter {
 	 * A builder for {@link RulesKeeperReporter} instances. Defaults to not using a prefix, using the default clock, converting rates to events/second, converting
 	 * durations to milliseconds, and not filtering metrics.
 	 */
-	public static class Builder {
+	public static final class Builder {
 		private final MetricRegistry registry;
 		private Clock clock;
 		private String prefix;
@@ -188,20 +188,18 @@ public class RulesKeeperReporter extends ScheduledReporter {
 		LOGGER.warn("Unable to report to RulesKeeper", ruleskeeper, e);
 	}
 
-	private void reportGauge(String name, Gauge gauge, long timestamp) throws IllegalArgumentException, IOException, InterruptedException, ExecutionException {
+	private void reportGauge(String name, Gauge gauge, long timestamp) throws IOException, InterruptedException, ExecutionException {
 		final String value = format(gauge.getValue());
 		if (value != null) {
 			ruleskeeper.sendSingleMetric(prefix(name), prefix(name), value, timestamp);
 		}
 	}
 
-	private void reportCounter(String name, Counter counter, long timestamp) throws IllegalArgumentException, IOException, InterruptedException,
-			ExecutionException {
+	private void reportCounter(String name, Counter counter, long timestamp) throws IOException, InterruptedException, ExecutionException {
 		ruleskeeper.sendSingleMetric(prefix(name), prefix(name), format(counter.getCount()), timestamp);
 	}
 
-	private void reportHistogram(String name, Histogram histogram, long timestamp) throws IllegalArgumentException, IOException, InterruptedException,
-			ExecutionException {
+	private void reportHistogram(String name, Histogram histogram, long timestamp) throws IOException, InterruptedException, ExecutionException {
 		final Snapshot snapshot = histogram.getSnapshot();
 		ruleskeeper.send(prefix(name), "count", format(histogram.getCount()), timestamp);
 		ruleskeeper.send(prefix(name), "max", format(snapshot.getMax()), timestamp);
@@ -216,7 +214,7 @@ public class RulesKeeperReporter extends ScheduledReporter {
 		ruleskeeper.send(prefix(name), "p999", format(snapshot.get999thPercentile()), timestamp);
 	}
 
-	private void reportMetered(String name, Metered meter, long timestamp) throws IllegalArgumentException, IOException, InterruptedException, ExecutionException {
+	private void reportMetered(String name, Metered meter, long timestamp) throws IOException, InterruptedException, ExecutionException {
 		ruleskeeper.send(prefix(name), "count", format(meter.getCount()), timestamp);
 		ruleskeeper.send(prefix(name), "m1_rate", format(convertRate(meter.getOneMinuteRate())), timestamp);
 		ruleskeeper.send(prefix(name), "m5_rate", format(convertRate(meter.getFiveMinuteRate())), timestamp);
@@ -224,7 +222,7 @@ public class RulesKeeperReporter extends ScheduledReporter {
 		ruleskeeper.send(prefix(name), "mean_rate", format(convertRate(meter.getMeanRate())), timestamp);
 	}
 
-	private void reportTimer(String name, Timer timer, long timestamp) throws IllegalArgumentException, IOException, InterruptedException, ExecutionException {
+	private void reportTimer(String name, Timer timer, long timestamp) throws IOException, InterruptedException, ExecutionException {
 		final Snapshot snapshot = timer.getSnapshot();
 
 		ruleskeeper.send(prefix(name), "max", format(convertDuration(snapshot.getMax())), timestamp);

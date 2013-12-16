@@ -10,10 +10,27 @@
   </parent>
 
   <artifactId>metrics-ruleskeeper</artifactId>
+  <version>3.1.2</version>
   <name>RulesKeeper :: Integration for Metrics</name>
   <packaging>bundle</packaging>
   <description>A Reporter for Metrics which announces measurements to a RulesKeeper Server</description>
 
+  <developers>
+    <developer>
+      <name>Alexandre GIGLEUX</name>
+      <email>alexandre.gigleux@gmail.com</email>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/RulesKeeper/metrics-ruleskeeper.git</connection>
+    <developerConnection>scm:git:git@github.com/RulesKeeper/metrics-ruleskeeper.gitr</developerConnection>
+    <url>https://github.com/RulesKeeper/metrics-ruleskeeper.git</url>
+  </scm>
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/RulesKeeper/metrics-ruleskeeper/issues</url>
+  </issueManagement>
   <build>
     <pluginManagement>
       <!-- plugins ordered by shortname (archetype, assembly ...) -->
@@ -49,12 +66,30 @@
     <dependency>
       <groupId>com.codahale.metrics</groupId>
       <artifactId>metrics-core</artifactId>
-      <version>${project.version}</version>
+      <version>3.1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.ruleskeeper</groupId>
       <artifactId>ruleskeeper-protobuf</artifactId>
       <version>0.2-SNAPSHOT</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>jcl-over-slf4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>log4j-over-slf4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-classic</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.ning</groupId>

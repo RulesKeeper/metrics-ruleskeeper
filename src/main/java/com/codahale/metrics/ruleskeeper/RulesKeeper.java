@@ -27,7 +27,8 @@ public final class RulesKeeper implements Closeable {
 
 	private String url;
 	private String dataProviderName;
-	private static Handler httpHandler = new Handler();
+	private Handler httpHandler = new Handler();
+	private AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
 
 	public RulesKeeper(String url) {
 		this(url, "Metrics");
@@ -80,7 +81,7 @@ public final class RulesKeeper implements Closeable {
 
 	public void sendMetricToServer(Metric m, AsyncCompletionHandler<Response> handler) throws IOException, InterruptedException, ExecutionException {
 		ByteString data = m.toByteString();
-		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+
 		String dataAsString = data.toStringUtf8();
 		Response r = asyncHttpClient.preparePost(url + RULESKEEPER_API_URI).addParameter("data", dataAsString).execute(handler).get();
 		if (SUCESSS_STATUS_CODE.contains(r.getStatusCode())) {
@@ -88,12 +89,12 @@ public final class RulesKeeper implements Closeable {
 		} else {
 			LOGGER.debug("Not able to send Metric to RulesKeeper Server: {}", r.getStatusCode());
 		}
-		asyncHttpClient.close();
+
 	}
 
 	@Override
 	public void close() throws IOException {
-		// nothing to do
+		asyncHttpClient.close();
 	}
 
 	protected String sanitize(String s) {
